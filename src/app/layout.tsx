@@ -16,8 +16,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} bg-white`}>{children}</body>
+    // Suggest using theme-change: https://github.com/saadeghi/theme-change
+    <html lang="en" data-theme="dark">
+      <body className={`${inter.className} bg-neutral`}>{children}</body>
     </html>
   )
 }
