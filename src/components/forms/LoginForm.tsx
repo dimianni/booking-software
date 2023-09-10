@@ -1,11 +1,14 @@
 "use client"
 
 import axios from 'axios'
+import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 
 type Props = {}
 
 export default function LoginForm({ }: Props) {
+
+    const router = useRouter()
 
     const [input, setInput] = useState({
         email: '',
@@ -14,22 +17,24 @@ export default function LoginForm({ }: Props) {
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = e.target
-        setInput(prev => ({...prev, [name]: value}))
+        setInput(prev => ({ ...prev, [name]: value }))
     }
 
-    async function handleLogin(e: React.MouseEvent<HTMLButtonElement, MouseEvent>){
-        e.preventDefault()
+    async function handleLogin(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        e.preventDefault();
 
-        const response = await fetch('/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(input),
-        });
+        try {
+            const { data } = await axios.post('/api/auth/login', input);            
+            const { message, success } = await data;
 
-        const { message } = await response.json();
-        alert(message);
+            if (success){
+                router.push("/dashboard")
+            }
+
+        } catch (error) {
+            const errorMessage = (error as Error).message
+            console.log(errorMessage);
+        }
     }
 
     return (
