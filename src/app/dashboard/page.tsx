@@ -12,7 +12,7 @@ export default function dashboard({}: Props) {
           <Link href="/dashboard/opening">Opening Hours</Link>
         </div>
         <div className='m-3 underline'>
-          <Link href="/dashboard/menu">Menu</Link>
+          <Link href="/dashboard/catalog">Catalog</Link>
         </div>
       </div>
     </div>
