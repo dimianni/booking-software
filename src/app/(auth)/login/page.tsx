@@ -5,7 +5,7 @@ type Props = {}
 
 export default function login({}: Props) {
   return (
-    <div>
+    <div className='w-full flex justify-center items-center pt-36'>
       <LoginForm />
     </div>
   )

@@ -24,10 +24,10 @@ export default function LoginForm({ }: Props) {
         e.preventDefault();
 
         try {
-            const { data } = await axios.post('/api/auth/login', input);            
+            const { data } = await axios.post('/api/auth/login', input);
             const { message, success } = await data;
 
-            if (success){
+            if (success) {
                 router.push("/dashboard")
             }
 
@@ -38,22 +38,20 @@ export default function LoginForm({ }: Props) {
     }
 
     return (
-        <div>
-            <div className='flex flex-col'>
-                <div className="form-control w-full max-w-xs">
-                    <label className="label">
-                        <span className="label-text">Email address</span>
-                    </label>
-                    <input type="email" name="email" placeholder="Email address" onChange={handleChange} value={input.email} className="input input-bordered w-full max-w-xs" />
-                </div>
-                <div className="form-control w-full max-w-xs">
-                    <label className="label">
-                        <span className="label-text">Password</span>
-                    </label>
-                    <input type="password" name="password" placeholder="Password" onChange={handleChange} value={input.password} className="input input-bordered w-full max-w-xs" />
-                </div>
-                <button className='btn' onClick={handleLogin}>Log in</button>
+        <div className='w-96 flex flex-col'>
+            <div className="form-control w-full">
+                <label className="label">
+                    <span className="label-text">Email address</span>
+                </label>
+                <input type="email" name="email" placeholder="Email address" onChange={handleChange} value={input.email} className="input input-bordered w-full" />
             </div>
+            <div className="form-control w-full">
+                <label className="label">
+                    <span className="label-text">Password</span>
+                </label>
+                <input type="password" name="password" placeholder="Password" onChange={handleChange} value={input.password} className="input input-bordered w-full" />
+            </div>
+            <button className='btn mt-12' onClick={handleLogin}>Log in</button>
         </div>
     )
 }
