@@ -34,7 +34,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
             const response = NextResponse.json({ message: "Auth success!", success: true }, { status: 200 });
 
             response.cookies.set({
-                name: 'jwt',
+                name: 'user-token',
                 value: token,
                 httpOnly: true,
                 maxAge: 60 * 60,

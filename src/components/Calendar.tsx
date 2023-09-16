@@ -2,27 +2,24 @@
 
 import { OPENING_TIME, CLOSING_TIME, INTERVAL } from '@/constants/config'
 import { add, format } from 'date-fns'
-import React, { useState } from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import ReactCalendar from 'react-calendar'
 import { FaArrowLeft } from 'react-icons/fa'
+import { Booking } from '@/types'
 
-
-type Props = {}
-
-interface Booking {
-    date: Date | null
-    dateTime: Date | null
+type CalendarProps = {
+    booking: Booking
+    setBooking: Dispatch<SetStateAction<Booking>>
 }
 
-export default function Calendar({ }: Props) {
-
-    const [booking, setBooking] = useState<Booking>({
-        date: null,
-        dateTime: null
-    })
+export default function Calendar({ booking, setBooking }: CalendarProps) {
 
     function dateSelected(date: Date) {
         setBooking(prev => ({ ...prev, date: date }))
+    }
+
+    function dateTimeSelected(dateTime: Date){
+        setBooking(prev => ({ ...prev, dateTime: dateTime}))
     }
 
     function getTimes() {
@@ -58,7 +55,9 @@ export default function Calendar({ }: Props) {
                                     {
                                         timesAvailable?.map(time => {
                                             return (
-                                                <li className='bg-gray-200 rounded-sm p-2 m-2'>{format(time, "kk:mm")}</li>
+                                                <li className='bg-gray-200 rounded-sm p-2 m-2' onClick={() => dateTimeSelected(time)}>
+                                                    {format(time, "kk:mm")}
+                                                </li>
                                             )
                                         })
                                     }
