@@ -2,7 +2,7 @@
 
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 type Props = {}
 
@@ -20,9 +20,7 @@ export default function LoginForm({ }: Props) {
         setInput(prev => ({ ...prev, [name]: value }))
     }
 
-    async function handleLogin(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-        e.preventDefault();
-
+    async function handleLogin() {
         try {
             const { data } = await axios.post('/api/auth/login', input);
             const { message, success } = await data;
@@ -37,19 +35,41 @@ export default function LoginForm({ }: Props) {
         }
     }
 
+    function handleEnterKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {
+        if (e.key === "Enter") {
+            handleLogin()
+        }
+    }
+
     return (
         <div className='w-96 flex flex-col'>
             <div className="form-control w-full">
                 <label className="label">
                     <span className="label-text">Email address</span>
                 </label>
-                <input type="email" name="email" placeholder="Email address" onChange={handleChange} value={input.email} className="input input-bordered w-full" />
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Email address"
+                    onChange={handleChange}
+                    onKeyPress={handleEnterKeyPress}
+                    value={input.email}
+                    className="input input-bordered w-full"
+                />
             </div>
             <div className="form-control w-full">
                 <label className="label">
                     <span className="label-text">Password</span>
                 </label>
-                <input type="password" name="password" placeholder="Password" onChange={handleChange} value={input.password} className="input input-bordered w-full" />
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    onChange={handleChange}
+                    onKeyPress={handleEnterKeyPress}
+                    value={input.password}
+                    className="input input-bordered w-full"
+                />
             </div>
             <button className='btn mt-12' onClick={handleLogin}>Log in</button>
         </div>
