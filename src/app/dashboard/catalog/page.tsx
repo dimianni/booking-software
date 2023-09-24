@@ -38,38 +38,54 @@ export default function catalog({ }: Props) {
     if (!image) return
 
     // Creating a special S3 URL to which we can upload the image
-    const { data } = await axios.post('/api/dashboard/S3', { fileType: image.type })
-    const { url, fields, key } = await data
-
-    const imgObject = {
-      ...fields,
-      'Content-Type': image.type,
-      image
-    }
-
-    const formData = new FormData()
-    Object.entries(imgObject).forEach(([key, value]) => {
-      formData.append(key, value as any)
+    const { data } = await axios.post('/api/dashboard/S3', { 
+      fileType: image.type,
+      fileName: image.name
     })
+    const { url, key } = await data
 
-    await fetch(url, {
-      method: 'POST',
-      body: formData
-    })
+    console.log(url);
+    
+    // const imgObject = {
+    //   ...fields,
+    //   "Content-Type": image.type,
+    //   "Access-Control-Allow-Origin": "*",
+    //   image
+    // }
+
+    // const formData = new FormData()
+    // Object.entries(imgObject).forEach(([key, value]) => {
+    //   formData.append(key, value as any)
+    // })
+
+    // await fetch(url, {
+    //   method: 'POST',
+    //   body: formData,
+    //   headers: {
+    //     "Access-Control-Allow-Origin": "*"
+    //   }
+    // })
+
+    await axios.put(url, image, {
+      headers: {
+        "Content-type": image.type,
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
 
     return key
   }
 
   async function addcatalogItem() {
-    // const key = await handleImageUpload()
-    // if (!key) throw new Error('No key')
+    const key = await handleImageUpload()
+    if (!key) throw new Error('No key')
 
     // Adding item to DB
     const response = await axios.post('/api/dashboard/addItem', {
       name: input.name,
       description: input.description,
       price: parseInt(input.price.toString()),
-      imageKey: ''
+      imageKey: key
     })
 
     console.log(response);
