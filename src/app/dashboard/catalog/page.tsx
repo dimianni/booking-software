@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { AiOutlineCloudUpload } from 'react-icons/ai'
 import { Product } from '@/types'
 import { MAX_FILE_SIZE } from '@/constants/config'
+import axios from 'axios'
 
 type Props = {}
 
@@ -14,25 +15,79 @@ const initialInput = {
   image: null
 }
 
-export default function menu({ }: Props) {
+export default function catalog({ }: Props) {
 
   const [input, setInput] = useState<Product>(initialInput)
   const [error, setError] = useState<string>('')
+  const [items, setItems] = useState<Product[]>([])
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) {
     const { name, value } = e.target
     setInput(prev => ({ ...prev, [name]: value }))
   }
 
-  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>){
+  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files?.[0]) return setError('No file selected!')
     if (e.target.files[0].size > MAX_FILE_SIZE) return setError('Image size is over 5MB!')
     setInput((prev) => ({ ...prev, image: e.target.files![0] }))
   }
 
+  async function handleImageUpload() {
+    const { image } = input
+
+    if (!image) return
+
+    // Creating a special S3 URL to which we can upload the image
+    const { data } = await axios.post('/api/dashboard/S3', { fileType: image.type })
+    const { url, fields, key } = await data
+
+    const imgObject = {
+      ...fields,
+      'Content-Type': image.type,
+      image
+    }
+
+    const formData = new FormData()
+    Object.entries(imgObject).forEach(([key, value]) => {
+      formData.append(key, value as any)
+    })
+
+    await fetch(url, {
+      method: 'POST',
+      body: formData
+    })
+
+    return key
+  }
+
+  async function addcatalogItem() {
+    // const key = await handleImageUpload()
+    // if (!key) throw new Error('No key')
+
+    // Adding item to DB
+    const response = await axios.post('/api/dashboard/addItem', {
+      name: input.name,
+      description: input.description,
+      price: parseInt(input.price.toString()),
+      imageKey: ''
+    })
+
+    console.log(response);
+
+
+    getItems()
+    // // Reset input
+    // setInput(initialInput)
+  }
+
+  async function getItems() {
+    const { data } = await axios.get('/api/dashboard/getItems')
+    setItems(data.items)
+  }
+
   useEffect(() => {
-    console.log(input);
-  }, [input])
+    getItems()
+  }, [])
 
   return (
     <section>
@@ -105,10 +160,20 @@ export default function menu({ }: Props) {
             </label>
           </div>
 
+          <button onClick={addcatalogItem}>Add item</button>
+
         </div>
       </div>
       <div>
         <h2>Catalog</h2>
+        <ul>
+          {items?.map((item, index) => {
+            return (
+              <li key={index}>{item.name}</li>
+            )
+          })}
+        </ul>
+
       </div>
     </section>
   )

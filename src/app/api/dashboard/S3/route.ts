@@ -1,4 +1,5 @@
 import { s3 } from "@/app/lib/s3";
+import { MAX_FILE_SIZE } from "@/constants/config";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -22,7 +23,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
             Fields: { key },
             Expires: 60,
             Conditions: [
-                ['content-length-range', 0, 1024 * 1024 * 5],
+                ['content-length-range', 0, MAX_FILE_SIZE],
                 ['starts-with', '$Content-Type', 'image/']
             ]
         },
