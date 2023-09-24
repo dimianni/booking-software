@@ -7,5 +7,6 @@ export interface Product {
     name: string
     description: string
     price: number
-    image: File | null
+    image: File | null,
+    url: string
 }

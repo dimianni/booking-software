@@ -21,28 +21,12 @@ export async function POST(request: NextRequest, response: NextResponse) {
 
         const fileParams = {
             Bucket: 'dimianni-booking-software',
-            // Fields: { key },
-            Key: name,
+            Key: key,
             Expires: 60,
             ContentType: ex
-            // Conditions: [
-            //     ['content-length-range', 0, MAX_FILE_SIZE],
-            //     ['starts-with', '$Content-Type', 'image/']
-            // ]
         }
 
         const url = await s3.getSignedUrlPromise('putObject', fileParams)
-
-
-        // const { url, fields } = (await new Promise((resolve, reject) => {
-        //     s3.createPresignedPost(fileParams,
-        //         (err, data) => {
-        //             if (err) return reject(err)
-        //             resolve(data)
-        //         }
-        //     )
-        // })) as any as { url: string; fields: any }
-
 
         return NextResponse.json({ url, key }, { status: 200 });
     } catch (error) {

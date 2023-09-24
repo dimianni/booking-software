@@ -23,7 +23,7 @@ export async function GET() {
                     const errorMessage = (error as Error).message
                     console.error(`Error fetching image for item ${item.id}: ${errorMessage}`);
                     // Provide a default image URL or handle the error as needed
-                    return { ...item, url: "default_image_url.jpg" };
+                    // return { ...item, url: "default_image_url.jpg" };
                 }
             })
         )

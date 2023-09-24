@@ -5,6 +5,7 @@ import { AiOutlineCloudUpload } from 'react-icons/ai'
 import { Product } from '@/types'
 import { MAX_FILE_SIZE } from '@/constants/config'
 import axios from 'axios'
+import Image from 'next/image'
 
 type Props = {}
 
@@ -12,7 +13,8 @@ const initialInput = {
   name: '',
   description: '',
   price: 0,
-  image: null
+  image: null,
+  url: ''
 }
 
 export default function catalog({ }: Props) {
@@ -43,28 +45,6 @@ export default function catalog({ }: Props) {
       fileName: image.name
     })
     const { url, key } = await data
-
-    console.log(url);
-    
-    // const imgObject = {
-    //   ...fields,
-    //   "Content-Type": image.type,
-    //   "Access-Control-Allow-Origin": "*",
-    //   image
-    // }
-
-    // const formData = new FormData()
-    // Object.entries(imgObject).forEach(([key, value]) => {
-    //   formData.append(key, value as any)
-    // })
-
-    // await fetch(url, {
-    //   method: 'POST',
-    //   body: formData,
-    //   headers: {
-    //     "Access-Control-Allow-Origin": "*"
-    //   }
-    // })
 
     await axios.put(url, image, {
       headers: {
@@ -99,6 +79,8 @@ export default function catalog({ }: Props) {
   async function getItems() {
     const { data } = await axios.get('/api/dashboard/getItems')
     setItems(data.items)
+    console.log(data.items);
+    
   }
 
   useEffect(() => {
@@ -185,11 +167,15 @@ export default function catalog({ }: Props) {
         <ul>
           {items?.map((item, index) => {
             return (
-              <li key={index}>{item.name}</li>
+              <li key={index}>
+                <div>
+                  <p>{item?.name}</p>
+                  <img alt={item?.name} src={item?.url} width="100" height="75" />
+                </div>
+              </li>
             )
           })}
         </ul>
-
       </div>
     </section>
   )
