@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <main>
       {!booking.dateTime && <Calendar booking={booking} setBooking={setBooking} />}
-      {booking.dateTime && false ? (
+      {booking.dateTime && true ? (
         <Menu />
       ) : (
         <div className="loading loading-spinner loading-lg"></div>

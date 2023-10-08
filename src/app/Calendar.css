@@ -36,7 +36,7 @@
   @apply flex h-11 mb-2;
 }
 .react-calendar__navigation button {
-  @apply min-w-[11px] bg-none;
+  @apply min-w-[44px] bg-none;
 }
 .react-calendar__navigation button:disabled {
   @apply btn-disabled;

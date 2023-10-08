@@ -21,7 +21,8 @@ export default function catalog({ }: Props) {
 
   const [input, setInput] = useState<Product>(initialInput)
   const [error, setError] = useState<string>('')
-  const [items, setItems] = useState<Product[]>([])
+  const [items, setItems] = useState<Product[] | null>(null)
+  const [uploading, setUploading] = useState(false)
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) {
     const { name, value } = e.target
@@ -40,7 +41,7 @@ export default function catalog({ }: Props) {
     if (!image) return
 
     // Creating a special S3 URL to which we can upload the image
-    const { data } = await axios.post('/api/dashboard/S3', { 
+    const { data } = await axios.post('/api/dashboard/S3', {
       fileType: image.type,
       fileName: image.name
     })
@@ -59,6 +60,7 @@ export default function catalog({ }: Props) {
   async function addcatalogItem() {
     const key = await handleImageUpload()
     if (!key) throw new Error('No key')
+    setUploading(true)
 
     // Adding item to DB
     const response = await axios.post('/api/dashboard/addItem', {
@@ -70,8 +72,9 @@ export default function catalog({ }: Props) {
 
     console.log(response);
 
-
     getItems()
+    setUploading(false)
+
     // // Reset input
     // setInput(initialInput)
   }
@@ -80,35 +83,82 @@ export default function catalog({ }: Props) {
     const { data } = await axios.get('/api/dashboard/getItems')
     setItems(data.items)
     console.log(data.items);
-    
+
   }
 
   useEffect(() => {
     getItems()
   }, [])
 
+  let catalogItems;
+
+  if(!items){
+    catalogItems = <div className="loading loading-spinner loading-lg"></div> 
+  } else if(items.length !== 0){
+    catalogItems = (
+      <ul className='w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8'>
+        {items?.map((item, index) => {
+          return (
+            <li key={index} className='w-full'>
+              <div className="card w-full bg-base-100 shadow-xl">
+                <figure className='p-8 pb-0'><img alt={item?.name} src={item?.url} width="50%" height="auto" /></figure>
+                <div className="card-body">
+                  <div className='flex justify-between'>
+                    <h2 className="card-title">{item?.name}</h2>
+                    <p className="card-title flex justify-end">{item?.price}&#x20AC;</p>
+                  </div>
+                  <p>{item?.description}</p>
+                </div>
+              </div>
+            </li>
+          )
+        })}
+      </ul>
+    )
+  } else {
+    catalogItems = <p>No products found.</p> 
+  }
+
   return (
     <section>
-      <div>
-        <h2>Add Item</h2>
-        <div>
-          {/* Product Name */}
-          <div className="form-control w-full max-w-xs">
-            <label className="label">
-              <span className="label-text">What is the product name?</span>
-            </label>
-            <input
-              type="text"
-              placeholder="Product name"
-              name="name"
-              id="name"
-              className="input input-bordered w-full max-w-xs"
-              onChange={handleInputChange}
-            />
+      <div className='mb-8'>
+        <h1 className='text-center mb-3 font-bold'>Add Item</h1>
+        <div className='w-full md:w-11/12 lg:w-4/6 xl:w-3/5 mx-auto'>
+
+          <div className="w-full flex justify-between mb-3">
+            {/* Product Name */}
+            <div className="form-control w-full max-w-xs mr-3">
+              <label className="label">
+                <span className="label-text">What is the product name?</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Product name"
+                name="name"
+                id="name"
+                className="input input-bordered w-full max-w-xs"
+                onChange={handleInputChange}
+              />
+            </div>
+
+            {/* Product Price */}
+            <div className="form-control w-full max-w-xs">
+              <label className="label">
+                <span className="label-text">What is the product price?</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Product price (€)"
+                name="price"
+                id="price"
+                className="input input-bordered w-full max-w-xs"
+                onChange={handleInputChange}
+              />
+            </div>
           </div>
 
           {/* Product Description */}
-          <div className="form-control">
+          <div className="w-full form-control mb-6">
             <label className="label">
               <span className="label-text">What is the product description?</span>
             </label>
@@ -121,22 +171,7 @@ export default function catalog({ }: Props) {
             />
           </div>
 
-          {/* Product Price */}
-          <div className="form-control w-full max-w-xs">
-            <label className="label">
-              <span className="label-text">What is the product price?</span>
-            </label>
-            <input
-              type="text"
-              placeholder="Product price"
-              name="price"
-              id="price"
-              className="input input-bordered w-full max-w-xs"
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div className="max-w-xl">
+          <div className="w-full mb-6">
             <label
               className="flex justify-center w-full h-32 px-4 transition bg-transparent border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
               <span className="flex items-center space-x-2">
@@ -158,24 +193,17 @@ export default function catalog({ }: Props) {
             </label>
           </div>
 
-          <button onClick={addcatalogItem}>Add item</button>
+          <div className='flex justify-end'>
+            <button className='btn btn-primary' onClick={addcatalogItem}>
+              {uploading ? (<div className="loading loading-spinner loading-lg"></div>) : "Add item"}
+            </button>
+          </div>
 
         </div>
       </div>
-      <div>
-        <h2>Catalog</h2>
-        <ul>
-          {items?.map((item, index) => {
-            return (
-              <li key={index}>
-                <div>
-                  <p>{item?.name}</p>
-                  <img alt={item?.name} src={item?.url} width="100" height="75" />
-                </div>
-              </li>
-            )
-          })}
-        </ul>
+      <div className='flex flex-col justify-center items-center'>
+        <h1 className='text-center mb-3 font-bold'>Catalog</h1>
+        {catalogItems}
       </div>
     </section>
   )
