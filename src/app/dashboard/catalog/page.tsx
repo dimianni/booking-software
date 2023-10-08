@@ -17,10 +17,23 @@ const initialInput = {
   url: ''
 }
 
+const initialErrors = {
+  name: '',
+  description: '',
+  price: ''
+}
+
+interface Errors {
+  name?: string
+  description?: string
+  price?: string
+}
+
 export default function catalog({ }: Props) {
 
   const [input, setInput] = useState<Product>(initialInput)
   const [error, setError] = useState<string>('')
+  const [formErrors, setFormErrors] = useState<Errors>(initialErrors)
   const [items, setItems] = useState<Product[] | null>(null)
   const [uploading, setUploading] = useState(false)
 
@@ -38,8 +51,10 @@ export default function catalog({ }: Props) {
   async function handleImageUpload() {
     const { image } = input
 
-    if (!image) return
-
+    if (!image) {
+      setError('No file selected!')
+      return
+    }
     // Creating a special S3 URL to which we can upload the image
     const { data } = await axios.post('/api/dashboard/S3', {
       fileType: image.type,
@@ -60,7 +75,28 @@ export default function catalog({ }: Props) {
   async function addcatalogItem() {
     const key = await handleImageUpload()
     if (!key) throw new Error('No key')
+
+
+    const errors: Errors = {}
+
+    if (input.name === '') {
+      errors.name = "Product name is required!"
+    }
+    if (input.price === 0) {
+      errors.price = "Product price is required!"
+    }
+    if (input.description === '') {
+      errors.description = "Product description is required!"
+    }
+
+    if(Object.keys(errors).length > 0){
+      setFormErrors(errors)
+      return
+    }
+
     setUploading(true)
+    setError('')
+    setFormErrors(initialErrors)
 
     // Adding item to DB
     const response = await axios.post('/api/dashboard/addItem', {
@@ -70,20 +106,15 @@ export default function catalog({ }: Props) {
       imageKey: key
     })
 
-    console.log(response);
-
     getItems()
     setUploading(false)
-
-    // // Reset input
-    // setInput(initialInput)
+    // Reset input
+    setInput(initialInput)
   }
 
   async function getItems() {
     const { data } = await axios.get('/api/dashboard/getItems')
     setItems(data.items)
-    console.log(data.items);
-
   }
 
   useEffect(() => {
@@ -92,9 +123,9 @@ export default function catalog({ }: Props) {
 
   let catalogItems;
 
-  if(!items){
-    catalogItems = <div className="loading loading-spinner loading-lg"></div> 
-  } else if(items.length !== 0){
+  if (!items) {
+    catalogItems = <div className="loading loading-spinner loading-lg"></div>
+  } else if (items.length !== 0) {
     catalogItems = (
       <ul className='w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8'>
         {items?.map((item, index) => {
@@ -116,7 +147,7 @@ export default function catalog({ }: Props) {
       </ul>
     )
   } else {
-    catalogItems = <p>No products found.</p> 
+    catalogItems = <p>No products found.</p>
   }
 
   return (
@@ -137,8 +168,12 @@ export default function catalog({ }: Props) {
                 name="name"
                 id="name"
                 className="input input-bordered w-full max-w-xs"
+                value={input.name}
                 onChange={handleInputChange}
               />
+              {formErrors.name && (<label className="label">
+                <span className="label-text-alt text-red-500">{formErrors.name}</span>
+              </label>)}
             </div>
 
             {/* Product Price */}
@@ -152,8 +187,12 @@ export default function catalog({ }: Props) {
                 name="price"
                 id="price"
                 className="input input-bordered w-full max-w-xs"
+                value={input.price}
                 onChange={handleInputChange}
               />
+              {formErrors.price && (<label className="label">
+                <span className="label-text-alt text-red-500">{formErrors.price}</span>
+              </label>)}
             </div>
           </div>
 
@@ -167,10 +206,15 @@ export default function catalog({ }: Props) {
               name="description"
               id="description"
               placeholder="Product description"
+              value={input.description}
               onChange={handleInputChange}
             />
+            {formErrors.description && (<label className="label">
+              <span className="label-text-alt text-red-500">{formErrors.description}</span>
+            </label>)}
           </div>
 
+          {/* Product Image */}
           <div className="w-full mb-6">
             <label
               className="flex justify-center w-full h-32 px-4 transition bg-transparent border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
@@ -191,6 +235,9 @@ export default function catalog({ }: Props) {
                 onChange={handleImageChange}
               />
             </label>
+            {error && (<label className="label">
+              <span className="label-text-alt text-red-500">{error}</span>
+            </label>)}
           </div>
 
           <div className='flex justify-end'>
