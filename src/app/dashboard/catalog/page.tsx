@@ -14,6 +14,8 @@ export default function catalog({ }: Props) {
 
   async function getItems() {
     const { data } = await axios.get('/api/dashboard/getItems')
+    console.log("getItems");
+    
     setItems(data.items)
   }
 
@@ -31,7 +33,7 @@ export default function catalog({ }: Props) {
         {items?.map((item, index) => {
           return (
             <li key={index} className='w-full'>
-              <AdminProductCard name={item.name} description={item.description} price={item.price} url={item.url} />
+              <AdminProductCard getItems={getItems} name={item.name} description={item.description} price={item.price} url={item.url} id={item.id} imageKey={item.imageKey} />
             </li>
           )
         })}

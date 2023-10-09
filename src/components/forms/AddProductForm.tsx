@@ -1,11 +1,10 @@
 "use client"
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { AiOutlineCloudUpload } from 'react-icons/ai'
 import { Product } from '@/types'
 import { MAX_FILE_SIZE } from '@/constants/config'
 import axios from 'axios'
-import Image from 'next/image'
 
 interface AddProductFormProps {
     getItems: () => Promise<void>
@@ -73,7 +72,7 @@ export default function AddProductForm({ getItems }: AddProductFormProps) {
         return key
     }
 
-    async function addcatalogItem() {
+    async function addCatalogItem() {
         const key = await handleImageUpload()
         if (!key) throw new Error('No key')
 
@@ -202,7 +201,7 @@ export default function AddProductForm({ getItems }: AddProductFormProps) {
 
           {/* Add Item button */}
           <div className='flex justify-end'>
-              <button className='btn btn-primary' onClick={addcatalogItem}>
+              <button className='btn btn-primary' onClick={addCatalogItem}>
                   {uploading ? (<div className="loading loading-spinner loading-lg"></div>) : "Add item"}
               </button>
           </div>
