@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Product } from '@/types'
 import axios from 'axios'
 import UserProductCard from './cards/UserProductCard'
+import Loader from './layouts/Loader'
 
 
 
@@ -26,7 +27,7 @@ export default function Menu({ }: Props) {
   let catalogItems;
 
   if (!items) {
-    catalogItems = <div className="loading loading-spinner loading-lg"></div>
+    catalogItems = <Loader />
   } else if (items.length !== 0) {
     catalogItems = (
       <ul className='w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8'>

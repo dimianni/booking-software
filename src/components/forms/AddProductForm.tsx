@@ -5,6 +5,7 @@ import { AiOutlineCloudUpload } from 'react-icons/ai'
 import { Product } from '@/types'
 import { MAX_FILE_SIZE } from '@/constants/config'
 import axios from 'axios'
+import Loader from '../layouts/Loader'
 
 interface AddProductFormProps {
     getItems: () => Promise<void>
@@ -202,7 +203,7 @@ export default function AddProductForm({ getItems }: AddProductFormProps) {
           {/* Add Item button */}
           <div className='flex justify-end'>
               <button className='btn btn-primary' onClick={addCatalogItem}>
-                  {uploading ? (<div className="loading loading-spinner loading-lg"></div>) : "Add item"}
+                  {uploading ? (<Loader />) : "Add item"}
               </button>
           </div>
       </div>

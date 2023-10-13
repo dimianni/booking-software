@@ -5,6 +5,7 @@ import { Product } from '@/types'
 import axios from 'axios'
 import AdminProductCard from '@/components/cards/AdminProductCard'
 import AddProductForm from '@/components/forms/AddProductForm'
+import Loader from '@/components/layouts/Loader'
 
 type Props = {}
 
@@ -26,7 +27,7 @@ export default function catalog({ }: Props) {
   let catalogItems;
 
   if (!items) {
-    catalogItems = <div className="loading loading-spinner loading-lg"></div>
+    catalogItems = <Loader />
   } else if (items.length !== 0) {
     catalogItems = (
       <ul className='w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8'>
