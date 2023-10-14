@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server"
 
 const prisma = new PrismaClient({})
 
-export async function POST(request: NextRequest, response: NextResponse) {
+export async function GET(request: NextRequest, response: NextResponse) {
     try {
         const closedDays = await prisma.closedDay.findMany()
         const isoClosedDays = closedDays.map(day => formatISO(day.date))

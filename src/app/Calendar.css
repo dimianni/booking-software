@@ -131,3 +131,7 @@
 .react-calendar--selectRange .react-calendar__tile--hover {
   background-color: rgb(238 242 255);
 }
+
+.closed-day{
+  background-color: gray !important;
+}

@@ -5,13 +5,13 @@ import { z } from "zod";
 const prisma = new PrismaClient({})
 
 const inputSchema = z.object({
-    date: z.date()
+    date: z.string()
 })
 
 export async function POST(request: NextRequest, response: NextResponse) {
     try {
         const body = await request.json()
-        const input = await inputSchema.parse(inputSchema)
+        const input = await inputSchema.parse(body)
 
         const openDay = await prisma.closedDay.delete({
             where: {

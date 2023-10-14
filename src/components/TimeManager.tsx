@@ -18,7 +18,7 @@ interface TimeManagerProps {
 export default function TimeManager({ days }: TimeManagerProps) {
 
     const [enabled, setEnabled] = useState<boolean>(false)
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+    const [selectedDate, setSelectedDate] = useState<Date>(now)
     const [openingHrs, setOpeningHrs] = useState([
         { name: 'sunday', openTime: days[0]!.openTime, closeTime: days[0]!.closeTime },
         { name: 'monday', openTime: days[1]!.openTime, closeTime: days[1]!.closeTime },
@@ -29,6 +29,7 @@ export default function TimeManager({ days }: TimeManagerProps) {
         { name: 'saturday', openTime: days[6]!.openTime, closeTime: days[6]!.closeTime },
     ])
     const [closedDays, setClosedDays] = useState([])
+    const [dayIsClosed, setDayIsClosed] = useState<boolean | null>(false)
 
     async function getClosedDays() {
         const { data } = await axios.get('/api/dashboard/times/getClosedDays')
@@ -39,12 +40,14 @@ export default function TimeManager({ days }: TimeManagerProps) {
         const { data } = await axios.post('/api/dashboard/times/openDay', {
             date: day
         })
+        getClosedDays() // refetch
         return data.openDay
     }
     async function closeDay(day: Date) {
         const { data } = await axios.post('/api/dashboard/times/closeDay', {
             date: day
         })
+        getClosedDays() // refetch
         return data.closeDay
     }
 
@@ -52,7 +55,15 @@ export default function TimeManager({ days }: TimeManagerProps) {
         getClosedDays()
     }, [])
 
-    const dayIsClosed = selectedDate && (closedDays as string[]).includes(formatISO(selectedDate))
+    useEffect(() => {
+        const check = () => selectedDate && (closedDays as string[]).includes(formatISO(selectedDate))
+        setDayIsClosed(check())
+    }, [selectedDate, closedDays])
+
+    useEffect(() => {
+        console.log(selectedDate);
+        
+    }, [selectedDate])
 
     // Curried for easier usage
     function _changeTime(day: Day) {
