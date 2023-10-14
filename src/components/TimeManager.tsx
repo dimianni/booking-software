@@ -20,13 +20,13 @@ export default function TimeManager({ days }: TimeManagerProps) {
     const [enabled, setEnabled] = useState<boolean>(false)
     const [selectedDate, setSelectedDate] = useState<Date>(now)
     const [openingHrs, setOpeningHrs] = useState([
-        { name: 'sunday', openTime: days[0]!.openTime, closeTime: days[0]!.closeTime },
-        { name: 'monday', openTime: days[1]!.openTime, closeTime: days[1]!.closeTime },
-        { name: 'tuesday', openTime: days[2]!.openTime, closeTime: days[2]!.closeTime },
-        { name: 'wednesday', openTime: days[3]!.openTime, closeTime: days[3]!.closeTime },
-        { name: 'thursday', openTime: days[4]!.openTime, closeTime: days[4]!.closeTime },
-        { name: 'friday', openTime: days[5]!.openTime, closeTime: days[5]!.closeTime },
-        { name: 'saturday', openTime: days[6]!.openTime, closeTime: days[6]!.closeTime },
+        { name: 'monday', openTime: days[0]!.openTime, closeTime: days[1]!.closeTime },
+        { name: 'tuesday', openTime: days[1]!.openTime, closeTime: days[2]!.closeTime },
+        { name: 'wednesday', openTime: days[2]!.openTime, closeTime: days[3]!.closeTime },
+        { name: 'thursday', openTime: days[3]!.openTime, closeTime: days[4]!.closeTime },
+        { name: 'friday', openTime: days[4]!.openTime, closeTime: days[5]!.closeTime },
+        { name: 'saturday', openTime: days[5]!.openTime, closeTime: days[6]!.closeTime },
+        { name: 'sunday', openTime: days[6]!.openTime, closeTime: days[0]!.closeTime }
     ])
     const [closedDays, setClosedDays] = useState([])
     const [dayIsClosed, setDayIsClosed] = useState<boolean | null>(false)
@@ -51,6 +51,19 @@ export default function TimeManager({ days }: TimeManagerProps) {
         return data.closeDay
     }
 
+    async function saveOpeningHrs(hours: {
+        id: string;
+        name: string;
+        openTime: string;
+        closeTime: string;
+    }[]){
+        console.log(hours);
+        
+        const { data } = await axios.post('/api/dashboard/times/changeOpeningTime', {
+            hours
+        })
+    }
+
     useEffect(() => {
         getClosedDays()
     }, [])
@@ -61,13 +74,15 @@ export default function TimeManager({ days }: TimeManagerProps) {
     }, [selectedDate, closedDays])
 
     useEffect(() => {
-        console.log(selectedDate);
+        console.log(openingHrs);
         
-    }, [selectedDate])
+    }, [openingHrs])
 
     // Curried for easier usage
     function _changeTime(day: Day) {
         return function (time: string, type: 'openTime' | 'closeTime') {
+            console.log("_changeTime");
+            
             const index = openingHrs.findIndex((x) => x.name === weekdayIndexToName(day.dayOfWeek))
             const newOpeningHrs = [...openingHrs]
             newOpeningHrs[index]![type] = time
@@ -154,7 +169,7 @@ export default function TimeManager({ days }: TimeManagerProps) {
                                         id: days[days.findIndex((d) => d.name === day.name)]!.id,
                                     }))
 
-                                    setOpeningHrs(withId)
+                                    saveOpeningHrs(withId)
                                 }}
                                 className="btn btn-primary">
                                 Save

@@ -14,7 +14,9 @@ const inputSchema = z.array(z.object({
 export async function POST(request: NextRequest, response: NextResponse) {
     try {
         const body = await request.json()
-        const input = await inputSchema.parse(body)
+        console.log(body);
+        
+        const input = await inputSchema.parse(body.hours)
 
         const results = await Promise.all(
             input.map(async (day) => {
