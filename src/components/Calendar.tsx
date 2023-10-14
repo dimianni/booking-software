@@ -1,14 +1,14 @@
 "use client"
 
-import { OPENING_TIME, CLOSING_TIME, INTERVAL, now } from '@/constants/config'
-import { add, format, formatISO, isBefore, parse } from 'date-fns'
-import React, { Dispatch, SetStateAction, useState, useEffect } from 'react'
+import { INTERVAL, now } from '@/constants/config'
+import { format, formatISO, isBefore, parse } from 'date-fns'
+import React, { useState, useEffect } from 'react'
 import ReactCalendar from 'react-calendar'
 import { FaArrowLeft } from 'react-icons/fa'
 import { Booking } from '@/types'
 import { Day } from '@prisma/client'
 import { useRouter } from 'next/navigation'
-import { roundToNearestMinutes } from '@/utils/helpers'
+import { getOpeningTimes, roundToNearestMinutes } from '@/utils/helpers'
 
 
 interface CalendarProps {
@@ -32,40 +32,16 @@ export default function Calendar({ days, closedDays }: CalendarProps) {
     })
 
     useEffect(() => {
-
         if (booking.dateTime) {
             localStorage.setItem('selectedtime', booking.dateTime.toISOString())
             router.push('/menu')
         }
-
     }, [booking.dateTime])
 
 
-    function dateSelected(date: Date) {
-        setBooking(prev => ({ ...prev, date: date }))
-    }
-
-    function dateTimeSelected(dateTime: Date) {
-        setBooking(prev => ({ ...prev, dateTime: dateTime }))
-    }
-
-    function getTimes() {
-
-        if (!booking.date) return
-
-        const openingTime = add(booking.date, { hours: OPENING_TIME })
-        const closingTime = add(booking.date, { hours: CLOSING_TIME })
-        const interval = INTERVAL
-        const times: Date[] = [];
-
-        for (let i = openingTime; i <= closingTime; i = add(i, { minutes: interval })) {
-            times.push(i)
-        }
-
-        return times
-    }
-
-    const timesAvailable = getTimes()
+    const dateSelected = (date: Date) => setBooking(prev => ({ ...prev, date: date }))
+    const dateTimeSelected = (dateTime: Date) => setBooking(prev => ({ ...prev, dateTime: dateTime }))
+    const timesAvailable = booking.date && getOpeningTimes(booking.date, days)
 
     return (
         <section className="calendar">
@@ -92,7 +68,11 @@ export default function Calendar({ days, closedDays }: CalendarProps) {
                             </div>
                         </div>
                     ) : (
-                        <ReactCalendar onClickDay={(value) => dateSelected(value)} />
+                        <ReactCalendar
+                            onClickDay={(value) => dateSelected(value)}
+                            minDate={now}
+                            tileDisabled={({ date }) => closedDays.includes(formatISO(date))}
+                        />
                     )
                 }
             </div>

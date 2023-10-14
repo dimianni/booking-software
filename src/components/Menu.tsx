@@ -1,28 +1,39 @@
+"use client"
+
 import React, { useState, useEffect } from 'react'
 import { Product } from '@/types'
 import axios from 'axios'
 import UserProductCard from './cards/UserProductCard'
 import Loader from './layouts/Loader'
-
-
+import { useRouter } from 'next/navigation'
+import { parseISO } from 'date-fns'
+import { now } from '@/constants/config'
 
 type Props = {}
 
 export default function Menu({ }: Props) {
 
-
+  const router = useRouter()
   const [items, setItems] = useState<Product[] | null>(null)
 
   async function getItems() {
     const { data } = await axios.get('/api/dashboard/getItems')
-    console.log("getItems");
-
     setItems(data.items)
   }
 
   useEffect(() => {
     getItems()
   }, [])
+
+  useEffect(() => {
+    const selectedTime = localStorage.getItem('selectedtime')
+    if (!selectedTime) {
+      router.push('/')
+    } else {
+      const date = parseISO(selectedTime)
+      if (date < now) router.push('/')
+    }
+  }, [router])
 
   let catalogItems;
 
@@ -43,7 +54,6 @@ export default function Menu({ }: Props) {
   } else {
     catalogItems = <p>No products found.</p>
   }
-
 
   return (
     <section>

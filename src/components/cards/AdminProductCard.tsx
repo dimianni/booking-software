@@ -19,9 +19,6 @@ export default function AdminProductCard({ getItems, id, name, url, price, descr
             id: id,
             imageKey: imageKey
         })
-
-        console.log(response.data);
-
         getItems()
     }
 

@@ -3,10 +3,7 @@ import type { NextRequest } from 'next/server'
 import { verifyToken } from './app/lib/auth'
 
 export async function middleware(request: NextRequest) {
-
-    console.log("middleware ran");
     
-
     let baseUrl = request.nextUrl
     // let baseUrl = request.nextUrl.origin
 

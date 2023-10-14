@@ -9,10 +9,14 @@ import TimeSelector from './TimeSelector'
 import Calendar from 'react-calendar'
 import { now } from '@/constants/config'
 
-
-
 interface TimeManagerProps {
     days: Day[]
+}
+interface OpeningHours {
+    id: string;
+    name: string;
+    openTime: string;
+    closeTime: string;
 }
 
 export default function TimeManager({ days }: TimeManagerProps) {
@@ -51,17 +55,11 @@ export default function TimeManager({ days }: TimeManagerProps) {
         return data.closeDay
     }
 
-    async function saveOpeningHrs(hours: {
-        id: string;
-        name: string;
-        openTime: string;
-        closeTime: string;
-    }[]){
-        console.log(hours);
-        
+    async function saveOpeningHrs(hours: OpeningHours[]){        
         const { data } = await axios.post('/api/dashboard/times/changeOpeningTime', {
             hours
         })
+        return data.results
     }
 
     useEffect(() => {
@@ -73,16 +71,9 @@ export default function TimeManager({ days }: TimeManagerProps) {
         setDayIsClosed(check())
     }, [selectedDate, closedDays])
 
-    useEffect(() => {
-        console.log(openingHrs);
-        
-    }, [openingHrs])
-
     // Curried for easier usage
     function _changeTime(day: Day) {
-        return function (time: string, type: 'openTime' | 'closeTime') {
-            console.log("_changeTime");
-            
+        return function (time: string, type: 'openTime' | 'closeTime') {            
             const index = openingHrs.findIndex((x) => x.name === weekdayIndexToName(day.dayOfWeek))
             const newOpeningHrs = [...openingHrs]
             newOpeningHrs[index]![type] = time
@@ -90,12 +81,10 @@ export default function TimeManager({ days }: TimeManagerProps) {
         }
     }
 
-
     return (
         <div className="w-full max-w-md px-2 py-16 sm:px-0">
             <Tab.Group>
                 <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
-
                     <Tab key="Hours"
                         className={({ selected }) =>
                             classNames(
@@ -210,4 +199,3 @@ export default function TimeManager({ days }: TimeManagerProps) {
         </div>
     )
 }
-

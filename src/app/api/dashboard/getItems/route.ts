@@ -28,9 +28,6 @@ export async function GET() {
             })
         )
 
-        console.log(withUrls, "Hereeeeeee");
-        
-
         return NextResponse.json({ items: withUrls, success: true }, { status: 200 })
     } catch (error) {
         const errorMessage = (error as Error).message

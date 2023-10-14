@@ -13,9 +13,7 @@ const inputSchema = z.array(z.object({
 
 export async function POST(request: NextRequest, response: NextResponse) {
     try {
-        const body = await request.json()
-        console.log(body);
-        
+        const body = await request.json()        
         const input = await inputSchema.parse(body.hours)
 
         const results = await Promise.all(

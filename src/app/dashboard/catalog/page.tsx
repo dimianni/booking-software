@@ -14,9 +14,7 @@ export default function catalog({ }: Props) {
   const [items, setItems] = useState<Product[] | null>(null)
 
   async function getItems() {
-    const { data } = await axios.get('/api/dashboard/getItems')
-    console.log("getItems");
-    
+    const { data } = await axios.get('/api/dashboard/getItems')    
     setItems(data.items)
   }
 
