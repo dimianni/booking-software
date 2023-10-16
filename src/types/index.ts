@@ -12,3 +12,9 @@ export interface Product {
     url: string
     imageKey?: string
 }
+
+export interface CartContextType {
+    productsInCart: { id: string; quantity: number }[];
+    addToCart: (id: string, quantity: number) => void;
+    removeFromCart: (id: string) => void;
+};

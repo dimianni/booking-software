@@ -13,7 +13,7 @@ const inputSchema = z.array(z.object({
 export async function POST(request: NextRequest, response: NextRequest) {
     try {
         const body = await request.json()
-        const input = inputSchema.parse(body)
+        const input = inputSchema.parse(body.productsInCart)
 
         const cartItems = await prisma.productItem.findMany({
             where: {

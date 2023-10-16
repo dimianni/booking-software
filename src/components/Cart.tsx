@@ -1,27 +1,58 @@
-import React from 'react'
+"use client"
+import React, { useContext, useEffect, useState } from 'react'
 import { GrClose } from 'react-icons/gr'
 import { FiShoppingCart } from 'react-icons/fi'
 import axios from 'axios'
+import { CartContext } from '@/contexts/CartContext'
+import CartProductCard from './cards/CartProductCard'
 
-interface CartProps {
-    products: {
-        id: string
-        quantity: number
-    }[]
-    removeFromCart: (id: string) => void
+
+const initCart = {
+    cartItems: [],
+    subtotal: 0
 }
 
-export default function Cart({ products, removeFromCart }: CartProps) {
+interface CartObject {
+    active: boolean
+    createdAt: string
+    description: string
+    id: string
+    imageKey: string
+    name: string
+    price: number
+    quantity: number
+    updatedAt: string
+    url: string
+}
+
+interface CartState {
+    cartItems: CartObject[]
+    subtotal: number
+}
+
+export default function Cart() {
+
+    const cartContext = useContext(CartContext)
+    const { productsInCart } = cartContext || { productsInCart: [] };
+
+    const [cart, setCart] = useState<CartState>(initCart)
 
     async function getCartItems() {
         try {
-            const { data } = await axios.post('/api/checkout/getCartItems', { products })
-            const cartItems = data.cartItems
-            const subtotal = data.subtotal
+            const { data } = await axios.post('/api/checkout/getCartItems', { productsInCart })
+            setCart(prev => ({
+                ...prev,
+                cartItems: data.cartItems,
+                subtotal: data.subtotal // Update subtotal with the data from the API
+            }));
         } catch (error) {
             console.log(error);
         }
     }
+
+    useEffect(() => {
+        getCartItems()
+    }, [productsInCart])
 
 
     return (
@@ -43,9 +74,16 @@ export default function Cart({ products, removeFromCart }: CartProps) {
                         </label>
 
                         <ul className='pt-4'>
-                            <li><a>Sidebar Item 1</a></li>
-                            <li><a>Sidebar Item 2</a></li>
+                            {
+                                cart.cartItems.map((item) => {
+                                    return (
+                                        <CartProductCard key={item.id} id={item.id} url={item.url} name={item.name} price={item.price} quantity={item.quantity} />
+                                    )
+                                })
+                            }
                         </ul>
+
+                        <p>Total: {cart.subtotal}</p>
                     </div>
                 </div>
             </div>

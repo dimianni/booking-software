@@ -45,7 +45,7 @@ export default function Menu({ }: Props) {
         {items?.map((item, index) => {
           return (
             <li key={index} className='w-full'>
-              <UserProductCard name={item.name} description={item.description} price={item.price} url={item.url} />
+              <UserProductCard id={item.id} name={item.name} description={item.description} price={item.price} url={item.url} />
             </li>
           )
         })}

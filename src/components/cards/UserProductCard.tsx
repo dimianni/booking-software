@@ -1,13 +1,24 @@
-import React from 'react'
+import { CartContext } from '@/contexts/CartContext'
+import React, { useContext } from 'react'
 
 interface UserProductCardProps {
+    id: string | undefined
     name: string
     url: string
     price: number
     description: string
 }
 
-export default function UserProductCard({ name, url, price, description }: UserProductCardProps) {
+export default function UserProductCard({ id, name, url, price, description }: UserProductCardProps) {
+
+    const cntx = useContext(CartContext)
+
+    function add(){
+        console.log("add");
+        
+        cntx?.addToCart(id!, 1)
+    }
+
     return (
         <div className="card w-full bg-base-100 shadow-xl">
             <div className="card-body">
@@ -18,7 +29,11 @@ export default function UserProductCard({ name, url, price, description }: UserP
                 </div>
                 <p>{description}</p>
                 <div className="card-actions justify-end">
-                    <button className="btn btn-primary">Add to cart</button>
+                    <button
+                        className="btn btn-primary"
+                        onClick={add}>
+                        Add to cart
+                    </button>
                 </div>
             </div>
         </div>
