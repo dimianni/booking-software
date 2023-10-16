@@ -135,3 +135,13 @@
 .closed-day{
   background-color: gray !important;
 }
+
+.react-calendar__navigation button:disabled{
+  visibility: hidden;
+}
+.react-calendar button{
+  @apply text-gray-700
+}
+.react-calendar button.btn-disabled, .react-calendar button[disabled], .react-calendar button:disabled{
+  @apply bg-gray-200 text-gray-400
+}
