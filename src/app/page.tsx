@@ -1,5 +1,5 @@
 import Calendar from "@/components/Calendar"
-import { Day, PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 import { formatISO } from "date-fns"
 
 const prisma = new PrismaClient({})

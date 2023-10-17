@@ -8,6 +8,7 @@ import Loader from './layouts/Loader'
 import { useRouter } from 'next/navigation'
 import { parseISO } from 'date-fns'
 import { now } from '@/constants/config'
+import ProductSkeleton from './layouts/ProductSkeleton'
 
 type Props = {}
 
@@ -15,6 +16,8 @@ export default function Menu({ }: Props) {
 
   const router = useRouter()
   const [items, setItems] = useState<Product[] | null>(null)
+  const [loading, setLoading] = useState<Boolean>(false)
+
 
   async function getItems() {
     const { data } = await axios.get('/api/dashboard/getItems')
@@ -22,7 +25,10 @@ export default function Menu({ }: Props) {
   }
 
   useEffect(() => {
+    setLoading(true)
     getItems()
+    setLoading(false)
+
   }, [])
 
   useEffect(() => {
@@ -38,10 +44,12 @@ export default function Menu({ }: Props) {
   let catalogItems;
 
   if (!items) {
-    catalogItems = <Loader />
+    catalogItems = (
+      <ProductSkeleton />
+    )
   } else if (items.length !== 0) {
     catalogItems = (
-      <ul className='w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8'>
+      <ul className='w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
         {items?.map((item, index) => {
           return (
             <li key={index} className='w-full'>
@@ -57,10 +65,11 @@ export default function Menu({ }: Props) {
 
   return (
     <section>
-      <h1 className='text-center mb-3 font-bold'>Menu</h1>
+      <h1 className='text-center mb-3 font-bold'>Interested in our hair styling products?</h1>
       <div>
         {catalogItems}
       </div>
+      
     </section>
   )
 }

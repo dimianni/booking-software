@@ -24,7 +24,11 @@ export default function RootLayout({
       <body className={`${inter.className} bg-neutral min-h-screen prose-h1:text-lg prose-h2:text-md`}>
         <CartProvider>
           <Header />
-          {children}
+          <div className="container mx-auto min-h-screen pt-6">
+            <main>
+              {children}
+            </main>
+          </div>
           <Footer />
         </CartProvider>
       </body>

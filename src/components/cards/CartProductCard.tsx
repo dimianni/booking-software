@@ -16,14 +16,18 @@ export default function CartProductCard({ id, url, name, price, quantity }: Cart
 
     return (
         <div>
-            <div className="card card-side bg-base-100 shadow-xl">
-                <figure><img src={url} alt={name} /></figure>
-                <div className="card-body">
+            <div className="card card-side bg-base-100 shadow-xl overflow-hidden">
+                <div className='max-w-[40%] bg-white p-2 flex justify-center items-center'>
+                    <figure>
+                        <img src={url} alt={name} />
+                    </figure>
+                </div>
+                <div className="card-body p-5">
                     <h2 className="card-title">{name}</h2>
                     <p>{price}</p>
-                    <p>{quantity}</p>
+                    <p>Quantity: {quantity}</p>
                     <div className="card-actions justify-end">
-                        <button className="btn btn-primary" onClick={() => removeFromCart(id)}>Remove</button>
+                        <button className="link" onClick={() => removeFromCart(id)}>Remove</button>
                     </div>
                 </div>
             </div>
