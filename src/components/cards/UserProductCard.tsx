@@ -16,7 +16,7 @@ export default function UserProductCard({ id, name, url, price, description }: U
     const cntx = useContext(CartContext)
     const [loading, setLoading] = useState<Boolean>(false)
 
-    function add() {        
+    function add() {
         setLoading(true)
         cntx?.addToCart(id!, 1)
         setLoading(false)
@@ -31,10 +31,8 @@ export default function UserProductCard({ id, name, url, price, description }: U
                 </figure>
             </div>
             <div className="card-body pt-5">
-                <div className='flex justify-between'>
-                    <h2 className="card-title">{name}</h2>
-                    <p className="card-title flex justify-end">{price}&#x20AC;</p>
-                </div>
+                <h2 className="card-title">{name}</h2>
+                <p className="card-title">{price}&#x20AC;</p>
                 <p>{description}</p>
                 <div className="card-actions justify-end mt-3">
                     <button

@@ -68,7 +68,7 @@ export default function Cart() {
                 <div className="drawer-content">
                     {/* Page content here */}
                     <label htmlFor="my-drawer-4" className="drawer-button btn btn-outline">
-                        <span className='w-4 h-2 rounded-full bg-primary'>{cart.totItems}</span>
+                        <span className={`w-5 h-5 rounded-full bg-primary flex justify-center items-center ${cart.totItems !== 0 && "animate-bounce"}`}>{cart.totItems}</span>
                         <FiShoppingCart className='h-4 w-4' />
                     </label>
                 </div>
