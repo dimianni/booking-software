@@ -1,4 +1,5 @@
 import { CartContext } from '@/contexts/CartContext'
+import { useRouter } from 'next/navigation'
 import React, { useContext } from 'react'
 
 interface CartProductCardProps {
@@ -13,6 +14,16 @@ export default function CartProductCard({ id, url, name, price, quantity }: Cart
 
     const cartContext = useContext(CartContext)
     const { removeFromCart } = cartContext || { removeFromCart: () => { } };
+    const router = useRouter()
+
+    function onRemove(id: string) {
+        if (id === "haircut") {
+            removeFromCart(id)
+            router.push('/')
+        } else {
+            removeFromCart(id)
+        }
+    }
 
     return (
         <div>
@@ -27,7 +38,7 @@ export default function CartProductCard({ id, url, name, price, quantity }: Cart
                     <p>{price}</p>
                     <p>Quantity: {quantity}</p>
                     <div className="card-actions justify-end">
-                        <button className="link" onClick={() => removeFromCart(id)}>Remove</button>
+                        <button className="link" onClick={() => onRemove(id)}>Remove</button>
                     </div>
                 </div>
             </div>

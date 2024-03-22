@@ -30,16 +30,19 @@ export default function AdminProductCard({ getItems, id, name, url, price, descr
     }
 
     return (
-        <div className="card w-full bg-base-100 shadow-xl relative overflow-hidden">
+        <div className="card w-full bg-base-100 shadow-xl relative">
             <div className="card-actions absolute top-3 right-4 flex flex-col gap-2">
-                <button onClick={deleteCatalogItem} className="btn btn-square btn-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                </button>
+                <div className="tooltip" data-tip={`${id === "haircut" ? "Cannot be deleted!" : "Delete"}`}>
+                    <button onClick={deleteCatalogItem} className={`btn btn-square btn-sm ${id === "haircut" && "btn-disabled"}`}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+
                 <button className="btn btn-square btn-sm" onClick={() => setIsEditMode(true)}>
                     <FiEdit />
                 </button>
             </div>
-            <div className='bg-white p-5'>
+            <div className='bg-white p-5 rounded-t-box'>
                 <figure><img alt={name} src={url} width="50%" height="auto" /></figure>
             </div>
 

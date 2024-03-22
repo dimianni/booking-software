@@ -5,7 +5,8 @@ import { Product } from '@/types'
 import axios from 'axios'
 import AdminProductCard from '@/components/cards/AdminProductCard'
 import AddProductForm from '@/components/forms/AddProductForm'
-import Loader from '@/components/layouts/Loader'
+import CardLayout from '@/components/layouts/CardLayout'
+import ProductSkeleton from '@/components/layouts/ProductSkeleton'
 
 type Props = {}
 
@@ -25,10 +26,10 @@ export default function catalog({ }: Props) {
   let catalogItems;
 
   if (!items) {
-    catalogItems = <Loader />
+    catalogItems = <ProductSkeleton />
   } else if (items.length !== 0) {
     catalogItems = (
-      <ul className='w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
+      <CardLayout>
         {items?.map((item, index) => {
           return (
             <li key={index} className='w-full'>
@@ -36,7 +37,7 @@ export default function catalog({ }: Props) {
             </li>
           )
         })}
-      </ul>
+      </CardLayout>
     )
   } else {
     catalogItems = <p>No products found.</p>

@@ -4,11 +4,11 @@ import React, { useState, useEffect } from 'react'
 import { Product } from '@/types'
 import axios from 'axios'
 import UserProductCard from './cards/UserProductCard'
-import Loader from './layouts/Loader'
 import { useRouter } from 'next/navigation'
 import { parseISO } from 'date-fns'
 import { now } from '@/constants/config'
 import ProductSkeleton from './layouts/ProductSkeleton'
+import CardLayout from './layouts/CardLayout'
 
 type Props = {}
 
@@ -28,7 +28,6 @@ export default function Menu({ }: Props) {
     setLoading(true)
     getItems()
     setLoading(false)
-
   }, [])
 
   useEffect(() => {
@@ -49,7 +48,7 @@ export default function Menu({ }: Props) {
     )
   } else if (items.length !== 0) {
     catalogItems = (
-      <ul className='w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
+      <CardLayout>
         {items?.map((item, index) => {
           return (
             <li key={index} className='w-full'>
@@ -57,7 +56,7 @@ export default function Menu({ }: Props) {
             </li>
           )
         })}
-      </ul>
+      </CardLayout>
     )
   } else {
     catalogItems = <p>No products found.</p>
@@ -65,11 +64,15 @@ export default function Menu({ }: Props) {
 
   return (
     <section>
+      <div className='mb-6'>
+        <h1 className='text-center mb-3 font-bold'>Great! 🎉</h1>
+        <h1 className='text-center mb-3 font-bold'>Please proceed to the cart to finalize the booking!</h1>
+      </div>
+
       <h1 className='text-center mb-3 font-bold'>Interested in our hair styling products?</h1>
       <div>
         {catalogItems}
       </div>
-      
     </section>
   )
 }

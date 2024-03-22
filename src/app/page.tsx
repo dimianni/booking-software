@@ -12,8 +12,9 @@ export default async function Home() {
   const closedDays = (await prisma.closedDay.findMany()).map(day => formatISO(day.date))
 
   return (
-    <main>
+    <>
+      <h1 className="mb-8 text-center">Please select date and time</h1>
       <Calendar days={days} closedDays={closedDays} />
-    </main>
+    </>
   )
 }

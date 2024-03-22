@@ -45,15 +45,15 @@ export default function Calendar({ days, closedDays }: CalendarProps) {
 
     return (
         <section className="calendar">
-            <div className="wrapper w-full h-screen flex justify-center items-center">
+            <div className="wrapper w-full flex justify-center items-center">
                 {
                     booking.date ? (
                         <div>
-                            <button className="back" onClick={() => setBooking(prev => ({ ...prev, date: null }))}>
+                            <button className="back flex items-center mb-4" onClick={() => setBooking(prev => ({ ...prev, date: null }))}>
                                 <FaArrowLeft />
+                                <span className='ml-2'>Back to date selection</span>
                             </button>
                             <div className="times">
-                                <div>Times available</div>
                                 <ul className='flex flex-wrap'>
                                     {
                                         timesAvailable?.map((time, i) => {

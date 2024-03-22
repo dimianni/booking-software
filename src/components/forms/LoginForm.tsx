@@ -6,6 +6,16 @@ import React, { useState, useEffect } from 'react'
 
 type Props = {}
 
+interface Errors {
+    email?: string
+    password?: string
+}
+
+const initialErrors = {
+    email: '',
+    password: ''
+}
+
 export default function LoginForm({ }: Props) {
 
     const router = useRouter()
@@ -14,6 +24,8 @@ export default function LoginForm({ }: Props) {
         email: '',
         password: ''
     })
+    const [formErrors, setFormErrors] = useState<Errors>(initialErrors)
+
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = e.target
@@ -22,6 +34,19 @@ export default function LoginForm({ }: Props) {
 
     async function handleLogin() {
         try {
+            const errors: Errors = {}
+            if (input.email === '') {
+                errors.email = "Email is required!"
+            }
+            if (input.password === '') {
+                errors.password = "Password is required!"
+            }
+            if (Object.keys(errors).length > 0) {
+                setFormErrors(errors)
+                return
+            }
+            setFormErrors(initialErrors)
+
             const { data } = await axios.post('/api/auth/login', input);
             const { message, success } = await data;
 
@@ -41,6 +66,10 @@ export default function LoginForm({ }: Props) {
         }
     }
 
+    useEffect(() => {
+        console.log(input, formErrors);
+    }, [input])
+
     return (
         <div className='w-96 flex flex-col'>
             <div className="form-control w-full">
@@ -56,6 +85,9 @@ export default function LoginForm({ }: Props) {
                     value={input.email}
                     className="input input-bordered w-full"
                 />
+                {formErrors.email && (<label className="label">
+                    <span className="label-text-alt text-red-500">{formErrors.email}</span>
+                </label>)}
             </div>
             <div className="form-control w-full">
                 <label className="label">
@@ -70,6 +102,9 @@ export default function LoginForm({ }: Props) {
                     value={input.password}
                     className="input input-bordered w-full"
                 />
+                {formErrors.password && (<label className="label">
+                    <span className="label-text-alt text-red-500">{formErrors.password}</span>
+                </label>)}
             </div>
             <button className='btn mt-12' onClick={handleLogin}>Log in</button>
         </div>
