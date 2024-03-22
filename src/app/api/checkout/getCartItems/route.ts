@@ -42,12 +42,18 @@ export async function POST(request: NextRequest, response: NextRequest) {
             })
         )
 
-        const subtotal = (
-            withUrls?.reduce(
-                (acc, item) => acc + item.price * withUrls.find((i) => i.id === item.id)!.quantity!,
-                0
-            ) ?? 0
-        ).toFixed(2)
+        // Assuming `withUrls` might have undefined items due to failed promises or errors in URL fetching
+        // Filter out any undefined items first
+        const filteredWithUrls = withUrls.filter(item => item !== undefined) as { id: string; price: number; quantity: number }[];
+
+        const subtotal = filteredWithUrls.reduce((acc, item) => {
+            // Ensure item and quantity are defined, even though we've already filtered undefined items,
+            // this is to pacify TypeScript's strict null checking
+            if (item && item.quantity !== undefined) {
+                return acc + item.price * item.quantity;
+            }
+            return acc;
+        }, 0).toFixed(2);
 
         return NextResponse.json({ cartItems: withUrls, subtotal: subtotal }, { status: 200 })
 
