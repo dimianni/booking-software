@@ -18,6 +18,31 @@ export default function Menu({ }: Props) {
   const [items, setItems] = useState<Product[] | null>(null)
   const [loading, setLoading] = useState<Boolean>(false)
 
+  const [selectedTime, setSelectedTime] = useState<string>('');
+
+  useEffect(() => {
+    // Get the initial value when the component mounts
+    const storedTime = localStorage.getItem('selectedtime');
+    if (storedTime) {
+      // Assuming the stored date is in ISO format, parse and format it
+      setSelectedTime(new Date(storedTime).toLocaleString());
+    }
+
+    // Set up a listener for changes to the 'selectedtime' in localStorage
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'selectedtime' && event.newValue) {
+        setSelectedTime(new Date(event.newValue).toLocaleString());
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    // Cleanup listener on component unmount
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
 
   async function getItems() {
     const { data } = await axios.get('/api/dashboard/getItems')
@@ -65,7 +90,8 @@ export default function Menu({ }: Props) {
   return (
     <section>
       <div className='mb-6'>
-        <h1 className='text-center mb-3 font-bold'>Great! 🎉</h1>
+        <h1 className='text-center mb-3 font-bold'>Great! 🎉 </h1>
+        <h1 className='text-center mb-3 font-bold'>You have selected: {selectedTime}</h1>
         <h1 className='text-center mb-3 font-bold'>Please proceed to the cart to finalize the booking!</h1>
       </div>
 
