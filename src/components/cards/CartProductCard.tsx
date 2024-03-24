@@ -35,7 +35,7 @@ export default function CartProductCard({ id, url, name, price, quantity }: Cart
                 </div>
                 <div className="card-body p-5">
                     <h2 className="card-title">{name}</h2>
-                    <p>{price}</p>
+                    <p>{price}&#x20AC;</p>
                     <p>Quantity: {quantity}</p>
                     <div className="card-actions justify-end">
                         <button className="link" onClick={() => onRemove(id)}>Remove</button>

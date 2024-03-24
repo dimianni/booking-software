@@ -5,6 +5,7 @@ import axios from 'axios'
 import { CartContext } from '@/contexts/CartContext'
 import CartProductCard from './cards/CartProductCard'
 import { AiOutlineClose } from 'react-icons/ai'
+import HostedPayment from './payment/HostedPayment'
 
 
 const initCart = {
@@ -59,7 +60,17 @@ export default function Cart() {
 
     useEffect(() => {
         getCartItems()
+        // console.log(cart);
     }, [productsInCart])
+
+    const paymentCartInfo = {
+        amount: Math.round(cart.subtotal * 100),
+        products: cart.cartItems.map(({ name, quantity, price }) => ({
+            name,
+            quantity,
+            price: Math.round(price * 100)
+        }))
+    };
 
     return (
         <div>
@@ -95,7 +106,8 @@ export default function Cart() {
                         </ul>
 
                         <div className='mt-5'>
-                            <h2>Total: <b>{cart.subtotal}</b></h2>
+                            <h2>Total: <b>{cart.subtotal}&#x20AC;</b></h2>
+                            <HostedPayment cartData={paymentCartInfo} />
                         </div>
                     </div>
                 </div>
