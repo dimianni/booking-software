@@ -58,7 +58,7 @@ export default function Calendar({ days, closedDays }: CalendarProps) {
                                     {
                                         timesAvailable?.map((time, i) => {
                                             return (
-                                                <li key={i} className='bg-gray-200 rounded-sm p-2 m-2' onClick={() => dateTimeSelected(time)}>
+                                                <li key={i} className='bg-gray-200 rounded-sm p-2 m-2 text-[#6d7482] cursor-pointer' onClick={() => dateTimeSelected(time)}>
                                                     {format(time, "kk:mm")}
                                                 </li>
                                             )

@@ -74,7 +74,8 @@ export default function Menu({ }: Props) {
   } else if (items.length !== 0) {
     catalogItems = (
       <CardLayout>
-        {items?.map((item, index) => {
+        {items?.map((item, index) => {  
+          if (item.id === 'haircut') return null;        
           return (
             <li key={index} className='w-full'>
               <UserProductCard id={item.id} name={item.name} description={item.description} price={item.price} url={item.url} />

@@ -60,7 +60,7 @@ export default function HostedPayment({cartData}: HostedPaymentProps) {
 
     return (
         <>
-            <button className="border-none rounded px-4 py-2 text-white font-medium w-full bg-grey shadow-[0_1px_3px_0_rgba(19,57,94,0.4)] hover:bg-[#1c204e] active:bg-[#0b2a49] cursor-pointer" onClick={initiatePayment}>PAY</button>
+            <button className="w-full btn btn-primary" onClick={initiatePayment}>Proceed to payment</button>
         </>
     );
 };

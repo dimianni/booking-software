@@ -13,7 +13,7 @@ export default async function Home() {
 
   return (
     <>
-      <h1 className="mb-8 text-center">Please select date and time</h1>
+      <h1 className="mb-8 text-center">Please select date and time 🗓️</h1>
       <Calendar days={days} closedDays={closedDays} />
     </>
   )

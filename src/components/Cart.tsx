@@ -88,7 +88,7 @@ export default function Cart() {
                     <div className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
                         {/* Sidebar content here */}
                         <div className='flex justify-between items-center'>
-                            <h1>Cart</h1>
+                            <FiShoppingCart className='h-5 w-5 text-white' />
                             <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay cursor-pointer">
                                 <AiOutlineClose className='h-5 w-5' style={{ fill: "white" }} />
                             </label>
@@ -106,8 +106,12 @@ export default function Cart() {
                         </ul>
 
                         <div className='mt-5'>
-                            <h2>Total: <b>{cart.subtotal}&#x20AC;</b></h2>
+                            <h2 className='mb-4'>Total: <b>{cart.subtotal}&#x20AC;</b></h2>
                             <HostedPayment cartData={paymentCartInfo} />
+                            <div className='bg-[#f0f0f0] text-[#6d7482] rounded-lg p-2 mt-5'>
+                                <p>❗️ Please use the following test card:</p>
+                                <p>💳 4242 4242 4242 4242 08/28 100</p>
+                            </div>
                         </div>
                     </div>
                 </div>
